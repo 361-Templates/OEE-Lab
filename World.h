@@ -16,19 +16,20 @@ class OrgWorld : public emp::World<Organism> {
     emp::Ptr<emp::DataMonitor<int>> data_node_orgcount;
     int MODES_RESOLUTION = 1;
     int FILTER_LENGTH = 1000;
-    emp::Ptr<emp::OEETracker<emp::Systematics<Organism, Organism>, emp::vector<int>>> oee;
+
     emp::DataFile oee_file;
 
   public:
+    emp::Ptr<emp::OEETracker<emp::Systematics<Organism, Organism>, Organism, emp::vector<double>>> oee; //no default constructor?
 
-    OrgWorld(emp::Random &_random) : emp::World<Organism>(_random), random(_random) {
+    OrgWorld(emp::Random &_random) : emp::World<Organism>(_random), random(_random), oee_file("oee.csv") {
         random_ptr.New(_random);
 
         emp::Ptr<emp::Systematics<Organism, Organism> > sys;
         sys.New([](const Organism & o){return o;});
-        oee.New(sys, [](Organism & org){return org;}, [](const emp::vector<int> & org){
+        oee.New(sys, [](Organism & org){return org;}, [](const Organism & org){
             return 1;
-        }); // WHAT SHOULD THESE ARGUMENTS BE?
+        }); 
         oee->SetResolution(MODES_RESOLUTION);
         oee->SetGenerationInterval(FILTER_LENGTH);
         AddSystematics(sys);
