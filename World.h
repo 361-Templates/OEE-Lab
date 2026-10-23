@@ -14,7 +14,7 @@ class OrgWorld : public emp::World<Organism> {
     emp::Random &random;
     emp::Ptr<emp::Random> random_ptr;
     emp::Ptr<emp::DataMonitor<int>> data_node_orgcount;
-    int MODES_RESOLUTION = 1;
+    int MODES_RESOLUTION = 10;
     int FILTER_LENGTH = 10;
 
     emp::DataFile oee_file;
@@ -27,8 +27,8 @@ class OrgWorld : public emp::World<Organism> {
         random_ptr.New(_random);
 
         emp::Ptr<emp::Systematics<Organism, double> > sys;
-        sys.New([](Organism & o){return o.GetCooperationProbability();});
-        oee.New(sys, [](double org_genome){return org_genome;}, [](double org_prob){
+        sys.New([](Organism & o){return std::round(o.GetCooperationProbability() * 5.0) / 5.0;});
+        oee.New(sys, [](double org_genome){return std::round(org_genome * 5.0) / 5.0;}, [](double org_prob){
             return 1;
         }); // second lambda needs to take type returned by first lambda
         oee->SetResolution(MODES_RESOLUTION);
@@ -43,7 +43,7 @@ class OrgWorld : public emp::World<Organism> {
         oee_file.AddCurrent(*oee->GetDataNode("diversity"), "ecology", "ecology potential");
         oee_file.AddCurrent(*oee->GetDataNode("complexity"), "complexity", "complexity potential");
         oee_file.PrintHeaderKeys();
-        oee_file.SetTimingRepeat(MODES_RESOLUTION);
+        oee_file.SetTimingRepeat(FILTER_LENGTH);
     }
 
     ~OrgWorld() {
@@ -78,7 +78,6 @@ class OrgWorld : public emp::World<Organism> {
       emp::World<Organism>::Update();
 
       emp::vector<size_t> schedule = emp::GetPermutation(random, GetSize());
-      std::cout << "Updating!" << std::endl;
       for(int i : schedule) {
         if(!IsOccupied(i)) {continue;}
         pop[i]->Process(100);

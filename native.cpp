@@ -15,13 +15,18 @@ int main(int argc, char* argv[])
 
   emp::Random random(5);
   OrgWorld world(random);
-  world.SetupOrgFile("data.csv");
+  world.SetupOrgFile("data.csv").SetTimingRepeat(20);
 
 
-  Organism* new_org = new Organism(&random);
-  world.Inject(*new_org);
+
 
   world.Resize(10,10);
+
+  Organism* new_org = new Organism(&random, random.GetDouble(0,1.0));
+  world.Inject(*new_org);
+
+
+
 
   for(int update=0; update<4000; update++){
     world.Update();

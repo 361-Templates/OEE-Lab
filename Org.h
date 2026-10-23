@@ -16,17 +16,15 @@ class Organism {
 
     void SetPoints(double _in) {points = _in;}
     void AddPoints(double _in) {points += _in;}
-    double GetCooperationProbability() {return cooperation_probability;}
+    double GetCooperationProbability() const {return cooperation_probability;}
     void SetCooperationProbability(double _in) {cooperation_probability = _in;}
 
-    void Mutate() {
-        cooperation_probability += random->GetNormal(0.0, 0.02);
-        if (cooperation_probability > 1.0) {
-            cooperation_probability = 1.0;
-        } else if (cooperation_probability < 0.0) {
-            cooperation_probability = 0.0;
+    void Mutate(double mut_rate = 0.5) { // 10% mutation chance per birth
+        if (random->P(mut_rate)) {
+            cooperation_probability += random->GetNormal(0.0, 0.20);
+            if (cooperation_probability > 1.0) cooperation_probability = 1.0;
+            if (cooperation_probability < 0.0) cooperation_probability = 0.0;
         }
-        std::cout << "Prob:" << cooperation_probability << std::endl;
     }
 
     emp::Ptr<Organism> CheckReproduction() {
@@ -41,7 +39,7 @@ class Organism {
     }
 
     void Process(int _points) {
-        AddPoints(_points*(1-GetCooperationProbability()));       
+        AddPoints(_points);       
     }
 
 
