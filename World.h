@@ -15,21 +15,22 @@ class OrgWorld : public emp::World<Organism> {
     emp::Ptr<emp::Random> random_ptr;
     emp::Ptr<emp::DataMonitor<int>> data_node_orgcount;
     int MODES_RESOLUTION = 1;
-    int FILTER_LENGTH = 1000;
+    int FILTER_LENGTH = 10;
 
     emp::DataFile oee_file;
 
   public:
-    emp::Ptr<emp::OEETracker<emp::Systematics<Organism, Organism>, Organism, emp::vector<double>>> oee; //no default constructor?
+    emp::Ptr<emp::OEETracker<emp::Systematics<Organism, double>, double>> oee;
+    //Second type needs to be what skeletonize would return, i.e. what first lamba returns, ie. what fun_calc_data_t returns
 
     OrgWorld(emp::Random &_random) : emp::World<Organism>(_random), random(_random), oee_file("oee.csv") {
         random_ptr.New(_random);
 
-        emp::Ptr<emp::Systematics<Organism, Organism> > sys;
-        sys.New([](const Organism & o){return o;});
-        oee.New(sys, [](Organism & org){return org;}, [](const Organism & org){
+        emp::Ptr<emp::Systematics<Organism, double> > sys;
+        sys.New([](Organism & o){return o.GetCooperationProbability();});
+        oee.New(sys, [](double org_genome){return org_genome;}, [](double org_prob){
             return 1;
-        }); 
+        }); // second lambda needs to take type returned by first lambda
         oee->SetResolution(MODES_RESOLUTION);
         oee->SetGenerationInterval(FILTER_LENGTH);
         AddSystematics(sys);

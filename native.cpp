@@ -23,12 +23,8 @@ int main(int argc, char* argv[])
 
   world.Resize(10,10);
 
-  for(int update=0; update<40; update++){
+  for(int update=0; update<4000; update++){
     world.Update();
-    std::cout << world.GetNumOrgs() << std::endl;
-
-    std::cout << world.size() << std::endl;
-
   }
 
 }
