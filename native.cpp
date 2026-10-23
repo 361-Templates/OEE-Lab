@@ -20,7 +20,8 @@ int main(int argc, char* argv[])
 
 
 
-  world.Resize(10,10);
+  world.Resize(100,100);
+  world.SetPopStruct_Grid(100, 100);
 
   Organism* new_org = new Organism(&random, random.GetDouble(0,1.0));
   world.Inject(*new_org);
