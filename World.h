@@ -27,7 +27,7 @@ class OrgWorld : public emp::World<Organism> {
         emp::Ptr<emp::Systematics<Organism, Organism> > sys;
         sys.New([](const Organism & o){return o;});
         oee.New(sys, [](Organism & org){return org;}, [](const emp::vector<int> & org){
-            return org.size() - emp::Count(org, -1);
+            return 1;
         }); // WHAT SHOULD THESE ARGUMENTS BE?
         oee->SetResolution(MODES_RESOLUTION);
         oee->SetGenerationInterval(FILTER_LENGTH);
