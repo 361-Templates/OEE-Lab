@@ -5,7 +5,6 @@
 #include "emp/math/random_utils.hpp"
 #include "emp/math/Random.hpp"
 #include "emp/data/DataFile.hpp"
-#include "emp/Evolve/OEE.hpp"
 
 #include "Org.h"
 
@@ -14,36 +13,10 @@ class OrgWorld : public emp::World<Organism> {
     emp::Random &random;
     emp::Ptr<emp::Random> random_ptr;
     emp::Ptr<emp::DataMonitor<int>> data_node_orgcount;
-    int MODES_RESOLUTION = 50;
-    int FILTER_LENGTH = 50;
-
-    emp::DataFile oee_file;
 
   public:
-    emp::Ptr<emp::OEETracker<emp::Systematics<Organism, double>, double>> oee;
-    //Second type needs to be what skeletonize would return, i.e. what first lamba returns, ie. what fun_calc_data_t returns
-
-    OrgWorld(emp::Random &_random) : emp::World<Organism>(_random), random(_random), oee_file("oee.csv") {
+    OrgWorld(emp::Random &_random) : emp::World<Organism>(_random), random(_random) {
         random_ptr.New(_random);
-
-        emp::Ptr<emp::Systematics<Organism, double> > sys;
-        sys.New([](Organism & o){return std::round(o.GetCooperationProbability() * 100.0) / 100.0;});
-        oee.New(sys, [](emp::Ptr<emp::Taxon<double>> taxon){return std::round(taxon->GetInfo() * 100.0) / 100.0;}, [](double org_prob){
-            return 1;
-        }); // second lambda needs to take type returned by first lambda
-        oee->SetResolution(MODES_RESOLUTION);
-        oee->SetGenerationInterval(FILTER_LENGTH);
-        AddSystematics(sys);
-        OnUpdate([this](int ud){oee->Update(ud); oee_file.Update(ud);});
-
-
-        oee_file.AddVar(update, "generation", "Generation");
-        oee_file.AddCurrent(*oee->GetDataNode("change"), "change", "change potential");
-        oee_file.AddCurrent(*oee->GetDataNode("novelty"), "novelty", "novelty potential");
-        oee_file.AddCurrent(*oee->GetDataNode("diversity"), "ecology", "ecology potential");
-        oee_file.AddCurrent(*oee->GetDataNode("complexity"), "complexity", "complexity potential");
-        oee_file.PrintHeaderKeys();
-        oee_file.SetTimingRepeat(FILTER_LENGTH);
     }
 
     ~OrgWorld() {

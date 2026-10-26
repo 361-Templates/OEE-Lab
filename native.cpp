@@ -15,7 +15,7 @@ int main(int argc, char* argv[])
 
   emp::Random random(5);
   OrgWorld world(random);
-  world.SetupOrgFile("data.csv").SetTimingRepeat(20);
+  world.SetupOrgFile("data.csv").SetTimingRepeat(1);
 
 
 
