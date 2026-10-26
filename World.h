@@ -14,8 +14,8 @@ class OrgWorld : public emp::World<Organism> {
     emp::Random &random;
     emp::Ptr<emp::Random> random_ptr;
     emp::Ptr<emp::DataMonitor<int>> data_node_orgcount;
-    int MODES_RESOLUTION = 10;
-    int FILTER_LENGTH = 10;
+    int MODES_RESOLUTION = 50;
+    int FILTER_LENGTH = 50;
 
     emp::DataFile oee_file;
 
@@ -27,8 +27,8 @@ class OrgWorld : public emp::World<Organism> {
         random_ptr.New(_random);
 
         emp::Ptr<emp::Systematics<Organism, double> > sys;
-        sys.New([](Organism & o){return std::round(o.GetCooperationProbability() * 5.0) / 5.0;});
-        oee.New(sys, [](emp::Ptr<emp::Taxon<double>> taxon){return std::round(taxon->GetInfo() * 5.0) / 5.0;}, [](double org_prob){
+        sys.New([](Organism & o){return std::round(o.GetCooperationProbability() * 100.0) / 100.0;});
+        oee.New(sys, [](emp::Ptr<emp::Taxon<double>> taxon){return std::round(taxon->GetInfo() * 100.0) / 100.0;}, [](double org_prob){
             return 1;
         }); // second lambda needs to take type returned by first lambda
         oee->SetResolution(MODES_RESOLUTION);

@@ -19,7 +19,7 @@ class Organism {
     double GetCooperationProbability() const {return cooperation_probability;}
     void SetCooperationProbability(double _in) {cooperation_probability = _in;}
 
-    void Mutate(double mut_rate = 0.5) { // 10% mutation chance per birth
+    void Mutate(double mut_rate = 0.5) { 
         if (random->P(mut_rate)) {
             cooperation_probability += random->GetNormal(0.0, 0.20);
             if (cooperation_probability > 1.0) cooperation_probability = 1.0;
